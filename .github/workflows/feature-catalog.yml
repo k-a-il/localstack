@@ -15,36 +15,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout the repository
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
-        fetch-depth: 2
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Process files changed in the current commit
-      run: |
-        changedFiles=$(git diff --name-only HEAD^)
-        echo "Changed files $changedFiles"
-        for file in $changedFiles; do
-          echo "Processing file: $file"
-        done
-        
+      - name: Get List of changed service files
+        id: changed-files
+        uses: tj-actions/changed-files@v46
+        with:
+          files: localstack-core/localstack/services/**
 
-#    - name: Set up Python
-#      uses: actions/setup-python@v5
-#      with:
-#        python-version: "3.11"
-
-    - name: Check feature catalog file existence
-      id: check_files
-      uses: andstor/file-existence-action@v3
-      with:
-        files: "/localstack-core/localstack/services/*/features.yml"
-        fail: false
-        ignore_case: false
-        follow_symbolic_links: false
-
-    - name: File exists
-      if: steps.check_files.outputs.files_exists == 'true'
-      run: echo Feature catalog files exist
+      - name: Verify features.yml file exists
+        run: |
+          MISSING_FEATURES_FILE=0
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            service_folder=$(dirname "$file")
+            if [ ! -f "$service_folder/features.yml" ]; then
+              echo "❌ Missing features.yml in $service_folder"
+              MISSING_FEATURES_FILE=1
+            fi
+          done
 
