@@ -158,7 +158,7 @@ class ValidationError(CommonServiceException):
 
 # For all operations constraints for states of keys are based on
 # https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html
-class KmsProvider(KmsApi, ServiceLifecycleHook):
+class KmsProvider(KmsApi, Test, ServiceLifecycleHook):
     """
     The LocalStack Key Management Service (KMS) provider.
 
