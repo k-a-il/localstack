@@ -24,6 +24,7 @@ jobs:
     - name: Process files changed in the current commit
       run: |
         changedFiles=$(git diff --name-only HEAD^)
+        echo "Changed files $changedFiles"
         for file in $changedFiles; do
           echo "Processing file: $file"
         done
