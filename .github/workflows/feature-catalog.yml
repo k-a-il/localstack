@@ -1,6 +1,7 @@
 name: LocalStack - Feature catalog files
 
 on:
+  workflow_dispatch:
   pull_request_target:
     paths:
       - localstack-core/localstack/services/**
