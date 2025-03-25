@@ -22,21 +22,10 @@ jobs:
 
       - name: Get List of changed service files
         id: changed-files
-        uses: tj-actions/changed-files@v46
-        with:
-          files: localstack-core/localstack/services/**
-
-      - name: Verify features.yml file exists
         run: |
-          echo "Changed files ${{ steps.changed-files.outputs.all_changed_files }}"
-          MISSING_FEATURES_FILE=0
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            service_folder=$(dirname "$file")
-            if [ ! -f "$service_folder/features.yml" ]; then
-              echo "❌ Missing features.yml in $service_folder"
-              MISSING_FEATURES_FILE=1
-            fi
-          done
+          ALL_CHANGED_FILES=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" | jq -r '.[].filename' | paste -sd, -)
+          echo "all_changed_files=$ALL_CHANGED_FILES" >> $GITHUB_OUTPUT
 
       - name: Set up Python 3.11
         id: setup-python
@@ -50,11 +39,8 @@ jobs:
 
       - name: Check YAML file schema
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}"
+          ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
           FEATURES_JSON_SCHEMA: "features_schema.json"
-        run: python .github/scripts/validate_yaml.py
-
-#        base_sha: ${{ github.event.pull_request.base.sha || 'origin/main' }}
-#          sha: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 .github/scripts/validate_yaml.py
 
 

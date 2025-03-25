@@ -38,7 +38,9 @@ def validate_yaml_against_schema(yaml_data, json_schema):
 
 def main():
     all_changed_files = os.getenv('ALL_CHANGED_FILES', '')
+    print(all_changed_files)
     features_schema_path = os.getenv('FEATURES_JSON_SCHEMA', '')
+    print(features_schema_path)
     yaml_files = [all_changed_files]
     print(all_changed_files)
     print(features_schema_path)
