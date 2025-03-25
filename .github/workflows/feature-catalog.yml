@@ -54,4 +54,7 @@ jobs:
           FEATURES_JSON_SCHEMA: "features_schema.json"
         run: python .github/scripts/validate_yaml.py
 
+#        base_sha: ${{ github.event.pull_request.base.sha || 'origin/main' }}
+#          sha: ${{ github.event.pull_request.head.sha || github.sha }}
+
 
