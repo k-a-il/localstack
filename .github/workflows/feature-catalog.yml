@@ -36,3 +36,16 @@ jobs:
             fi
           done
 
+      - name: Set up Python 3.11
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check YAML file schema
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}"
+          FEATURES_JSON_SCHEMA: "features_schema.json"
+        run: python .github/scripts/validate_yaml.py
+
+
