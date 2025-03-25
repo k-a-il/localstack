@@ -42,6 +42,10 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install dependencies
+        run: |
+          python3 -m pip install pyyaml jsonschema
+
       - name: Check YAML file schema
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}"
