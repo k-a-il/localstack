@@ -37,15 +37,14 @@ def validate_yaml_against_schema(yaml_data, json_schema):
         return False
 
 def main():
-    all_changed_files = os.getenv('ALL_CHANGED_FILES', '')
-    print(all_changed_files)
-    features_schema_path = os.getenv('FEATURES_JSON_SCHEMA', '')
-    print(features_schema_path)
-    yaml_files = [all_changed_files]
-    print(all_changed_files)
-    print(features_schema_path)
+    comma_separated_changed_files = os.getenv('ALL_CHANGED_FILES')
+    changed_files = comma_separated_changed_files.split(',')
+    changed_features_files = [path for path in changed_files if path.lower().endswith(('features.yaml', 'features.yml'))]
+    print(f'Changed features files: {",".join(changed_features_files)}')
+    features_schema_path = os.getenv('FEATURES_JSON_SCHEMA', 'features_schema.json')
     features_schema = load_json_file(features_schema_path)
-    for file_path in yaml_files:
+    print(f'Features schema file was loaded: {features_schema_path}')
+    for file_path in changed_features_files:
         print(file_path)
         features_file = load_yaml_file(file_path)
         validate_yaml_against_schema(features_file, features_schema)
