@@ -2,6 +2,10 @@ name: LocalStack - Feature catalog files
 
 on:
   workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number cannot be automatically detected in this event type and must be provided manually'
+        required: true
   pull_request_target:
     paths:
       - localstack-core/localstack/services/**
@@ -22,9 +26,11 @@ jobs:
 
       - name: Get List of changed service files
         id: changed-files
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
         run: |
           ALL_CHANGED_FILES=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" | jq -r '.[].filename' | paste -sd, -)
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/files" | jq -r '.[].filename' | paste -sd, -)
           echo "all_changed_files=$ALL_CHANGED_FILES" >> $GITHUB_OUTPUT
 
       - name: Set up Python 3.11
