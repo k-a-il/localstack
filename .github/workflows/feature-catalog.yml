@@ -2,6 +2,10 @@ name: LocalStack - Feature catalog files
 
 on:
   workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number cannot be automatically detected in this event type and must be provided manually'
+        required: true
   pull_request_target:
     paths:
       - localstack-core/localstack/services/**
@@ -17,31 +21,32 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Get List of changed service files
         id: changed-files
-        uses: tj-actions/changed-files@v46
-        with:
-          files: localstack-core/localstack/services/**
-
-      - name: List all changed files markdown files
-        if: steps.changed-markdown-files.outputs.any_changed == 'true'
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed-markdown-files.outputs.all_changed_files }}
+          PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
         run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
-          done
+          ALL_CHANGED_FILES=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/files" | jq -r '.[].filename' | paste -sd, -)
+          echo "all_changed_files=$ALL_CHANGED_FILES" >> $GITHUB_OUTPUT
 
-      - name: Verify features.yml file exists
+      - name: Set up Python 3.11
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
         run: |
-          echo "Changed files ${{ steps.changed-files.outputs.all_changed_files }}"
-          MISSING_FEATURES_FILE=0
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            service_folder=$(dirname "$file")
-            if [ ! -f "$service_folder/features.yml" ]; then
-              echo "❌ Missing features.yml in $service_folder"
-              MISSING_FEATURES_FILE=1
-            fi
-          done
+          python3 -m pip install pyyaml jsonschema
+
+      - name: Check YAML file schema
+        env:
+          ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
+          FEATURES_JSON_SCHEMA: "features_schema.json"
+        run: python3 .github/scripts/validate_yaml.py
+
 
