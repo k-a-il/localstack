@@ -48,5 +48,3 @@ jobs:
           ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
           FEATURES_JSON_SCHEMA: "features_schema.json"
         run: python3 .github/scripts/validate_yaml.py
-
-
