@@ -14,3 +14,4 @@ jobs:
       uses: localstack/meta/.github/workflows/pr-validate-features-files.yml@automation-features-files
       with:
         aws_services_path: 'localstack-core/localstack/services'
+        localstack_meta_ref: 'automation-features-files'
