@@ -322,7 +322,7 @@ OBJECT_OWNERSHIPS = get_class_attrs_from_spec_class(ObjectOwnership)
 
 DEFAULT_S3_TMP_DIR = "/tmp/localstack-s3-storage"
 
-
+# Changed provider comment
 class S3Provider(S3Api, ServiceLifecycleHook):
     def __init__(self, storage_backend: S3ObjectStore = None) -> None:
         super().__init__()
