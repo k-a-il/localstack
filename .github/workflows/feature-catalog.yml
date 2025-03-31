@@ -24,7 +24,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: 'localstack-repo'
 
       - name: Checkout localstack/meta repository
         uses: actions/checkout@v4
@@ -66,14 +65,12 @@ jobs:
         env:
           ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
           SERVICES_PATH: "${{ github.event.inputs.aws_services_path }}"
-        run: |
-          cd localstack-repo
+        run:
           python3 localstack-meta/.github/scripts/check_features_files_exist.py
 
       - name: Validate features files
         env:
           ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
           FEATURES_JSON_SCHEMA: 'localstack-meta/.github/features_schema.json'
-        run: |
-          cd localstack-repo 
+        run:
           python3 localstack-meta/.github/scripts/validate_features_files.py
