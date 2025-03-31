@@ -1,23 +1,12 @@
-name: S3
 service: s3
-description: "Amazon Simple Storage Service (Amazon S3) is an object storage service that offers scalability, data availability, security, and performance."
-aws_documentation: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html"
-localstack_documentation: "https://docs.localstack.cloud/user-guide/aws/s3/"
+name: S3
+localstack_page: "https://docs.localstack.cloud/user-guide/aws/s3/"
 features:
   - name: "Buckets"
     description: "A container for objects stored in Amazon S3."
-    documentation: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html"
+    documentation_page: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html"
     api_methods:
-        - name: "CreateBucket"
-          description: "Creates a new bucket."
-          documentation: "https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateBucket.html"
-          status: "supported"
-        - name: "DeleteBucket"
-          description: "Deletes an empty bucket."
-          documentation: "https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteBucket.html"
-          status: "supported"
-        - name: "ListBuckets"
-          description: "Returns a list of all buckets owned by the authenticated sender of the request."
-          documentation: "https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListBuckets.html"
-          status: "supported"
-
+      - create_bucket
+      - delete_bucket
+      - list_bucket
+    status: supported
