@@ -1,0 +1,16 @@
+service: APIGateway
+name: "AWS API Gateway"
+features:
+  - name: "REST APIs"
+    description: "Create, deploy, and manage REST APIs"
+    documentation_page: https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html
+    status: "supported"
+    wrong_field: 'test'
+    api_methods:
+      - create_rest_api
+      - get_rest_api
+      - delete_rest_api
+      - update_rest_api
+      - get_rest_apis
+    limitations:
+      - "Advanced integration types might have limited functionality"
