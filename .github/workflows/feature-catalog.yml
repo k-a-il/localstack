@@ -54,6 +54,13 @@ jobs:
         run: |
           python3 -m pip install pyyaml jsonschema
 
+      - name: List directory contents
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "\nDirectory contents:"
+          ls -la
+
       - name: Check features files exist
         env:
           ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
