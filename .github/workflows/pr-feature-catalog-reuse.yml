@@ -11,17 +11,10 @@ on:
         description: 'To manually launch this workflow, provide branch to checkout in the localstack/meta'
         type: string
         required: false
-#  pull_request_target:
-#    paths:
-#      - localstack-pro-core/localstack/pro/core/services/**
-#    types: [labeled, unlabeled, opened, edited, synchronize]
-#    # only enforce for PRs targeting the master branch
-#    branches:
-#    - master
 
 jobs:
   validate-features-files:
-      uses: .github/workflows/pr-validate-features-files.yml@automation-features-files
+      uses: localstack/meta/.github/workflows/pr-validate-features-files.yml@automation-features-files
       with:
         aws_services_path: 'localstack-core/localstack/services'
         pr_number: ${{ inputs.pr_number }}
