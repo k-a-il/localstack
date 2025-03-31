@@ -24,5 +24,5 @@ jobs:
       uses: localstack/meta/.github/workflows/pr-validate-features-files.yml@automation-features-files
       with:
         aws_services_path: 'localstack-core/localstack/services'
-        pr_number: ${{ github.event.inputs.pr_number }}
-        localstack_meta_ref: ${{ github.event.inputs.localstack_meta_ref }}
+        pr_number: ${{ inputs.pr_number }}
+        localstack_meta_ref: ${{ inputs.localstack_meta_ref }}
