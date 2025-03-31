@@ -6,25 +6,36 @@ on:
       pr_number:
         description: 'PR number cannot be automatically detected in this event type and must be provided manually'
         required: true
-  pull_request_target:
-    paths:
-      - localstack-core/localstack/services/**
-    types: [labeled, unlabeled, opened, edited, synchronize]
-    # only enforce for PRs targeting the master branch
-    branches:
-    - master
+      localstack_meta_ref:
+        description: 'To manually launch this workflow, provide branch to checkout in the localstack/meta'
+        type: string
+        required: false
+      aws_services_path:
+        description: 'Path to the folder with aws services in localstack repository'
+        type: string
+        required: true
 
 jobs:
   check_file_update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout current repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Get List of changed service files
+      - name: Checkout localstack/meta repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'localstack/meta'
+          sparse-checkout: |
+            .github/scripts
+            .github/features_schema.json
+          ref: ${{ github.event.inputs.localstack_meta_ref || 'main' }}
+          path: 'localstack-meta'
+
+      - name: Fetch list of modified files in the PR
         id: changed-files
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
@@ -33,7 +44,7 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/files" | jq -r '.[].filename' | paste -sd, -)
           echo "all_changed_files=$ALL_CHANGED_FILES" >> $GITHUB_OUTPUT
 
-      - name: Set up Python 3.11
+      - name: Set up Python
         id: setup-python
         uses: actions/setup-python@v5
         with:
@@ -43,8 +54,14 @@ jobs:
         run: |
           python3 -m pip install pyyaml jsonschema
 
-      - name: Check YAML file schema
+      - name: Check features files exist
         env:
           ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
-          FEATURES_JSON_SCHEMA: "features_schema.json"
-        run: python3 .github/scripts/validate_yaml.py
+          SERVICES_PATH: "${{ github.event.inputs.aws_services_path }}"
+        run: python3 localstack-meta/.github/scripts/check_features_files_exist.py
+
+      - name: Validate features files
+        env:
+          ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
+          FEATURES_JSON_SCHEMA: 'localstack-meta/.github/features_schema.json'
+        run: python3 localstack-meta/.github/scripts/validate_features_files.py
