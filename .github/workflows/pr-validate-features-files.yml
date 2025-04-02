@@ -25,7 +25,7 @@ jobs:
       - name: Checkout localstack/meta repository
         uses: actions/checkout@v4
         with:
-          repository: 'k-a-il/my-fork-localstack'
+          repository: 'k-a-il/localstack'
           sparse-checkout: |
             .github/scripts
             .github/features_schema.json
