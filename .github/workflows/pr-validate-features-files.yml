@@ -7,10 +7,6 @@ on:
         description: 'Directory containing AWS service implementations in the localstack repository'
         type: string
         required: true
-      pr_number:
-        description: 'Pull request number for workflow execution'
-        type: string
-        required: false
 
 jobs:
   validate-features-files:
@@ -25,13 +21,25 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
 
+      # Clone the localstack/meta repo to access required Python scripts and JSON schema files
+      - name: Checkout localstack/meta repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'k-a-il/my-fork-localstack'
+          sparse-checkout: |
+            .github/scripts
+            .github/features_schema.json
+          ref: 'master'
+          path: 'localstack-meta'
+
       - name: Fetch list of modified files in the PR
         id: changed-files
         env:
           PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
         run: |
-          ALL_CHANGED_FILES=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/files" | jq -r '.[].filename' | paste -sd, -)
+          echo "Temporary merge commit ${{ github.sha }}"
+          ALL_CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r --diff-filter=AM ${{ github.sha }} | paste -sd "," -)
+          echo "Changed files $ALL_CHANGED_FILES"
           echo "all_changed_files=$ALL_CHANGED_FILES" >> $GITHUB_OUTPUT
 
       - name: Set up Python
@@ -48,10 +56,10 @@ jobs:
         env:
           ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
           SERVICES_PATH: "${{ inputs.aws_services_path }}"
-        run: python3 .github/scripts/check_features_files_exist.py
+        run: python3 localstack-meta/.github/scripts/check_features_files_exist.py
 
       - name: Validate features files
         env:
           ALL_CHANGED_FILES: "${{ steps.changed-files.outputs.all_changed_files }}"
-          FEATURES_JSON_SCHEMA: '.github/features_schema.json'
-        run: python3 .github/scripts/validate_features_files.py
+          FEATURES_JSON_SCHEMA: 'localstack-meta/.github/features_schema.json'
+        run: python3 localstack-meta/.github/scripts/validate_features_files.py
