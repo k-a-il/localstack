@@ -1,0 +1,11 @@
+service: s3
+name: S3
+localstack_page: "https://docs.localstack.cloud/user-guide/aws/s3/"
+features:
+  - description: "A container for objects stored in Amazon S3."
+    documentation_page: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingBucket.html"
+    api_methods:
+      - create_bucket
+      - delete_bucket
+      - list_bucket
+    status: supported
