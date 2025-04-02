@@ -9,6 +9,6 @@ on:
 
 jobs:
   validate-features-files:
-      uses: k-a-il/my-fork-localstack/.github/workflows/pr-validate-features-files.yml@created-feature-catalog-s3
+      uses: k-a-il/my-fork-localstack/.github/workflows/pr-validate-features-files.yml@master
       with:
         aws_services_path: 'localstack-core/localstack/services'
