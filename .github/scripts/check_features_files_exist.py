@@ -37,7 +37,7 @@ def main():
     features_file_status = map_features_files_status(services_path, changed_files)
     for file_path, exists in features_file_status.items():
         if not exists:
-            sys.stdout.write(f"::warning ::Feature file {file_path} is missing")
+            sys.stdout.write(f"::error ::Service code was changed but no corresponding feature file found at {file_path}")
 
 
 if __name__ == "__main__":
