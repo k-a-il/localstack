@@ -1,0 +1,11 @@
+name: Artifact with features files
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-artifact-with-features-files:
+      uses: k-a-il/localstack/.github/workflows/artifact.yml@master
+      with:
+        artifact_name: 'features-files'
+        aws_services_path: 'localstack-core/localstack/services'
