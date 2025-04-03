@@ -35,7 +35,7 @@ jobs:
       - name: Copy folder
         run: |
           ls -la
-          cp features-files-community features-files-ext
+          cp -r features-files-community features-files-ext
 
       - name: Generate feature catalog page
         run: python3 .github/scripts/generate_feature_catalog_page.py
