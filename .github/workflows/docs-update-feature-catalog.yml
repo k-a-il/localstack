@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          path: localstack-community
 
       - name: Checkout docs repository
         uses: actions/checkout@v4
@@ -38,7 +40,7 @@ jobs:
           cp -r features-files-community features-files-ext
 
       - name: Generate feature catalog page
-        run: python3 .github/scripts/generate_feature_catalog_page.py
+        run: python3 localstack-community/.github/scripts/generate_feature_catalog_page.py
         env:
           PATH_FEATURE_FILES_COMMUNITY: 'features-files-community'
           PATH_FEATURE_FILES_EXT: 'features-files-ext'
