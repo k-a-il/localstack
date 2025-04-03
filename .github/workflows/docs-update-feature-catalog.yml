@@ -26,10 +26,10 @@ jobs:
       - name: Download features files from Collect feature files (GitHub)
         uses: actions/download-artifact@v4
         with:
+          name: features-files
           path: features-files-community
           repository: k-a-il/localstack
           run-id: ${{ env.FEATURES_ARTIFACTS_COMMUNITY_RUN_ID }}
-          #          name: features-files
 
       - name: Copy folder
         run: |
