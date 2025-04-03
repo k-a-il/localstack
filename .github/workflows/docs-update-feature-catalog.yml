@@ -19,7 +19,7 @@ jobs:
         with:
           path: features-files-community
           name: features-files
-          repository: localstack/localstack
+          repository: k-a-il/localstack
 
       - name: Copy folder
         run: |
