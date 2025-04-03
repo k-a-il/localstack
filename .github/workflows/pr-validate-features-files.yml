@@ -33,15 +33,9 @@ jobs:
 
       - name: Fetch list of modified files in the PR
         id: changed-files
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
         run: |
-          echo "Base commit ${{ github.event.pull_request.base.sha }}"
-          echo "Head commit ${{ github.event.pull_request.head.sha }}"
           ALL_CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r \
             --diff-filter=AM ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | paste -sd "," -)
-          echo "Changed files $ALL_CHANGED_FILES"
-          git diff-tree --no-commit-id --name-only -r --diff-filter=AM ${{ github.sha }} | paste -sd "," -
           echo "all_changed_files=$ALL_CHANGED_FILES" >> $GITHUB_OUTPUT
 
       - name: Set up Python

@@ -1,4 +1,5 @@
 import os
+import sys
 
 FEATURES_FILE_NAME='features.yml'
 
@@ -36,7 +37,7 @@ def main():
     features_file_status = map_features_files_status(services_path, changed_files)
     for file_path, exists in features_file_status.items():
         if not exists:
-            print(f"::warning Feature file {file_path} is missing")
+            sys.stdout.write(f"::warning ::Feature file {file_path} is missing")
 
 
 if __name__ == "__main__":
