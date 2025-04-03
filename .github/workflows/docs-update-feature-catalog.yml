@@ -27,9 +27,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: features-files-community
-          name: features-files
           repository: k-a-il/localstack
           run-id: ${{ env.FEATURES_ARTIFACTS_COMMUNITY_RUN_ID }}
+          #          name: features-files
 
       - name: Copy folder
         run: |
