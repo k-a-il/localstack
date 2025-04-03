@@ -1,8 +1,7 @@
 service: KMS service
 name: "KMS Service"
 features:
-  - name: "Rotate keys"
-    description: "Create, deploy, and manage REST APIs"
+  - description: "Create, deploy, and manage REST APIs"
     documentation_page: https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html
     status: "supported"
     limitations:
