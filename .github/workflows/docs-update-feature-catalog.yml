@@ -28,6 +28,7 @@ jobs:
         with:
           name: features-files
           path: features-files-community
+          github-token: ${{ secrets.GH_ACTION }}
           repository: k-a-il/localstack
           run-id: ${{ env.FEATURES_ARTIFACTS_COMMUNITY_RUN_ID }}
 
