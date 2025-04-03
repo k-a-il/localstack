@@ -14,7 +14,7 @@ from moto.iam.policy_validation import VALID_STATEMENT_ELEMENTS
 from localstack import config
 from localstack.constants import TAG_KEY_CUSTOM_ID
 from localstack.utils.patch import patch
-
+# CHanged provider IAM
 ADDITIONAL_MANAGED_POLICIES = {
     "AWSLambdaExecute": {
         "Arn": "arn:aws:iam::aws:policy/AWSLambdaExecute",
