@@ -14,12 +14,22 @@ jobs:
         with:
           repository: 'localstack/docs'
 
+      - name: Latest run-id from community repo
+        run: |
+          latest_workflow_id=$(curl -s https://api.github.com/repos/k-a-il/localstack/actions/workflows \
+            | jq '.workflows[] | select(.name=="Artifact with features files").id')
+          latest_run_id=$(curl -s \
+            https://api.github.com/repos/k-a-il/localstack/actions/workflows/153712669/runs | jq '.workflow_runs[0].id')
+          echo "Latest run-id: ${latest_run_id}"
+          echo "FEATURES_ARTIFACTS_COMMUNITY_RUN_ID=${latest_run_id}" >> $GITHUB_ENV
+
       - name: Download features files from Collect feature files (GitHub)
         uses: actions/download-artifact@v4
         with:
           path: features-files-community
           name: features-files
           repository: k-a-il/localstack
+          run-id: ${{ env.FEATURES_ARTIFACTS_COMMUNITY_RUN_ID }}
 
       - name: Copy folder
         run: |
