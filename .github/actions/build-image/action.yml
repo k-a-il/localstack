@@ -43,6 +43,7 @@ runs:
         PLATFORM: ${{ (runner.arch == 'X64' && 'amd64') || (runner.arch == 'ARM64' && 'arm64') || '' }}
         DOCKERFILE: ../Dockerfile
         DOCKER_BUILD_CONTEXT: ..
+        IMAGE_NAME: "localstack/localstack"
       working-directory: localstack/localstack-core
       run: |
         ../bin/docker-helper.sh build
