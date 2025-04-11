@@ -1,6 +1,6 @@
 name: AWS Integration Tests
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       onlyAcceptanceTests:
         description: 'Only run acceptance tests'
