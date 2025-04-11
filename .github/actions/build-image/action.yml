@@ -18,13 +18,6 @@ runs:
   using: "composite"
   # This GH Action requires localstack repo in 'localstack' dir + full git history (fetch-depth: 0)
   steps:
-    - name: List files
-      shell: bash
-      run: |
-        ls -l
-        ls -l localstack
-        cat localstack/.python-version
-
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
@@ -52,8 +45,8 @@ runs:
         DOCKER_BUILD_CONTEXT: ..
       working-directory: localstack/localstack-core
       run: |
-        ./bin/docker-helper.sh build
-        ./bin/docker-helper.sh save
+        ../bin/docker-helper.sh build
+        ../bin/docker-helper.sh save
 
     - name: Store Docker Image as Artifact
       uses: actions/upload-artifact@v4
