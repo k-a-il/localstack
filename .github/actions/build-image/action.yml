@@ -28,7 +28,7 @@ runs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: 'localstack/.python-version'
+        python-version-file: 'localstack/.python-version'
 
     - name: Install docker helper dependencies
       shell: bash
