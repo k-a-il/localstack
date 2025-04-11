@@ -1,0 +1,24 @@
+name: AWS Integration Tests
+on:
+  workflow_call:
+    inputs:
+      onlyAcceptanceTests:
+        description: 'Only run acceptance tests'
+        required: false
+        type: boolean
+        default: false
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: localstack
+          # setuptools_scm requires the git history (at least until the last tag) to determine the version
+          fetch-depth: 0
+
+      - name: Build Image
+        uses: ./localstack/.github/actions/build-image
+        with:
+          disableCaching: ${{ inputs.disableCaching == true && 'true' || 'false' }}
