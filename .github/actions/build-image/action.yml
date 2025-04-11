@@ -18,6 +18,13 @@ runs:
   using: "composite"
   # This GH Action requires localstack repo in 'localstack' dir + full git history (fetch-depth: 0)
   steps:
+    - name: List files
+      shell: bash
+      run: |
+        ls -l
+        ls -l localstack
+        cat localstack/.python-version
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
