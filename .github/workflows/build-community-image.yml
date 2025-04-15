@@ -18,6 +18,11 @@ jobs:
           # setuptools_scm requires the git history (at least until the last tag) to determine the version
           fetch-depth: 0
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+
       - name: Build Image
         uses: ./localstack/.github/actions/build-image
         with:
