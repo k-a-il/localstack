@@ -123,7 +123,7 @@ function cmd-build() {
     # --build-arg BUILDKIT_INLINE_CACHE=1: Instruct buildkit to inline the caching information into the image
     # --cache-from: Use the inlined caching information when building the image
     DOCKER_BUILDKIT=1 docker buildx build --pull --progress=plain \
-      --cache-from "$IMAGE_NAME" --build-arg BUILDKIT_INLINE_CACHE=1 \
+      --cache-to type=gha --cache-from type=gha --build-arg BUILDKIT_INLINE_CACHE=1 \
       --build-arg LOCALSTACK_PRE_RELEASE=$(_is_release_commit && echo "0" || echo "1") \
       --build-arg LOCALSTACK_BUILD_GIT_HASH=$(git rev-parse --short HEAD) \
       --build-arg=LOCALSTACK_BUILD_DATE=$(date -u +"%Y-%m-%d") \
