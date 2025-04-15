@@ -18,10 +18,6 @@ jobs:
           # setuptools_scm requires the git history (at least until the last tag) to determine the version
           fetch-depth: 0
 
-      - name: Pull Docker image
-        run: |
-          docker pull localstack/localstack:latest
-
       - name: Build Image
         uses: ./localstack/.github/actions/build-image
         with:

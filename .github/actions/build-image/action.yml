@@ -35,6 +35,10 @@ runs:
         username: ${{ inputs.dockerhubPullUsername }}
         password: ${{ inputs.dockerhubPullToken }}
 
+    - name: Pull Docker image
+      run: |
+        docker pull localstack/localstack:latest
+
     - name: Build Docker Image
       id: build-image
       shell: bash
