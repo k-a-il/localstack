@@ -428,7 +428,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare Local Test Environment
-        uses: localstack/localstack/.github/actions/setup-test-env@master
+        uses: k-a-il/localstack/.github/actions/setup-test-env@master
 
       - name: Run Cloudwatch v1 Provider Tests
         timeout-minutes: 30
