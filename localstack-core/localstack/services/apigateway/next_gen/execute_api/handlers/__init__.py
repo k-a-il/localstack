@@ -1,5 +1,7 @@
 from rolo.gateway import CompositeHandler
 
+from localstack.services.apigateway.analytics import invocation_counter
+
 from .analytics import IntegrationUsageCounter
 from .api_key_validation import ApiKeyValidationHandler
 from .gateway_exception import GatewayExceptionHandler
@@ -11,7 +13,6 @@ from .method_response import MethodResponseHandler
 from .parse import InvocationRequestParser
 from .resource_router import InvocationRequestRouter
 from .response_enricher import InvocationResponseEnricher
-from localstack.services.apigateway.analytics import invocation_counter
 
 parse_request = InvocationRequestParser()
 modify_request = CompositeHandler()

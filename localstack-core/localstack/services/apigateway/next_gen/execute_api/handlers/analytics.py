@@ -2,6 +2,7 @@ import logging
 
 from localstack.http import Response
 from localstack.utils.analytics.metrics import LabeledCounterMetric
+
 from ..api import RestApiGatewayHandler, RestApiGatewayHandlerChain
 from ..context import RestApiInvocationContext
 
