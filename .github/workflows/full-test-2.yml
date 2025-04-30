@@ -38,6 +38,33 @@ on:
         default: false
         required: false
         type: boolean
+  workflow_call:
+    inputs:
+      disableCaching:
+        description: 'Disable Caching'
+        required: false
+        type: boolean
+        default: false
+      PYTEST_LOGLEVEL:
+        type: string
+        required: false
+        description: Loglevel for PyTest
+        default: WARNING
+      disableTestSelection:
+        description: 'Disable Test Selection'
+        required: false
+        type: boolean
+        default: false
+      randomize-aws-credentials:
+        description: "Randomize AWS credentials"
+        default: false
+        required: false
+        type: boolean
+      onlyAcceptanceTests:
+        description: "Run only acceptance tests"
+        default: false
+        required: false
+        type: boolean
 
 env:
   PYTEST_LOGLEVEL: ${{ inputs.PYTEST_LOGLEVEL || 'WARNING' }}
@@ -315,7 +342,6 @@ jobs:
       - build
     strategy:
       matrix:
-        group: [ 1, 2 ]
         runner:
           - ubuntu-latest
           - ubuntu-24.04-arm
@@ -367,8 +393,8 @@ jobs:
           DEBUG: 1
           LOCALSTACK_INTERNAL_TEST_COLLECT_METRIC: 1
           PYTEST_ARGS: "${{ env.TINYBIRD_PYTEST_ARGS }}${{ env.TESTSELECTION_PYTEST_ARGS }} --reruns 3 -m acceptance_test -o junit_suite_name='acceptance_test'"
-          COVERAGE_FILE: "target/.coverage.acceptance-${{ env.PLATFORM }}-${{ matrix.group }}"
-          JUNIT_REPORTS_FILE: "target/pytest-junit-acceptance-${{ env.PLATFORM }}-${{ matrix.group }}.xml"
+          COVERAGE_FILE: "target/.coverage.acceptance-${{ env.PLATFORM }}"
+          JUNIT_REPORTS_FILE: "target/pytest-junit-acceptance-${{ env.PLATFORM }}.xml"
           TEST_PATH: "tests/aws/"
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_PULL_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
@@ -378,11 +404,11 @@ jobs:
         uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
-          name: test-results-acceptance-${{ env.PLATFORM }}-${{ matrix.group }}
+          name: test-results-acceptance-${{ env.PLATFORM }}
           include-hidden-files: true
           path: |
-            target/pytest-junit-acceptance-${{ env.PLATFORM }}-${{ matrix.group }}.xml
-            target/.coverage.acceptance-${{ env.PLATFORM }}-${{ matrix.group }}
+            target/pytest-junit-acceptance-${{ env.PLATFORM }}.xml
+            target/.coverage.acceptance-${{ env.PLATFORM }}
           retention-days: 30
 
   test-cloudwatch-v1:
@@ -402,14 +428,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare Local Test Environment
-        uses: k-a-il/localstack/.github/actions/setup-test-env@master
-
-      - name: Download Test Selection
-        if: ${{ env.TESTSELECTION_PYTEST_ARGS }}
-        uses: actions/download-artifact@v4
-        with:
-          name: test-selection
-          path: dist/testselection/
+        uses: localstack/localstack/.github/actions/setup-test-env@master
 
       - name: Run Cloudwatch v1 Provider Tests
         timeout-minutes: 30
@@ -627,7 +646,7 @@ jobs:
         run: |
           source .venv/bin/activate
           cd scripts
-          python -m capture_notimplemented_responses
+          python -m capture_notimplemented_responses ../results
 
       - name: Print the logs
         run: |
