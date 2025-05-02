@@ -64,9 +64,9 @@ jobs:
       # default "disableTestSelection" to `true` if it's a push or schedule event
       disableTestSelection: ${{ inputs.enableTestSelection != true }}
       PYTEST_LOGLEVEL: ${{ inputs.PYTEST_LOGLEVEL }}
-    secrets:
-      DOCKERHUB_PULL_USERNAME: ${{ secrets.DOCKERHUB_PULL_USERNAME }}
-      DOCKERHUB_PULL_TOKEN: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
+#    secrets:
+#      DOCKERHUB_PULL_USERNAME: ${{ secrets.DOCKERHUB_PULL_USERNAME }}
+#      DOCKERHUB_PULL_TOKEN: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
 #      TINYBIRD_PARITY_ANALYTICS_TOKEN: ${{ secrets.TINYBIRD_PARITY_ANALYTICS_TOKEN }}
 #      TINYBIRD_CI_TOKEN: ${{ secrets.TINYBIRD_CI_TOKEN }}
 
