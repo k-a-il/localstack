@@ -17,9 +17,14 @@ on:
         type: boolean
         default: false
       PYTEST_LOGLEVEL:
-        type: string
-        required: false
+        type: choice
         description: Loglevel for PyTest
+        options:
+          - DEBUG
+          - INFO
+          - WARNING
+          - ERROR
+          - CRITICAL
         default: WARNING
       disableTestSelection:
         description: 'Disable Test Selection'
@@ -44,14 +49,9 @@ on:
         type: boolean
         default: false
       PYTEST_LOGLEVEL:
-        type: choice
+        type: string
+        required: false
         description: Loglevel for PyTest
-        options:
-          - DEBUG
-          - INFO
-          - WARNING
-          - ERROR
-          - CRITICAL
         default: WARNING
       disableTestSelection:
         description: 'Disable Test Selection'
@@ -104,6 +104,34 @@ jobs:
           disableCaching: ${{ inputs.disableCaching == true && 'true' || 'false' }}
           dockerhubPullUsername: ${{ secrets.DOCKERHUB_PULL_USERNAME }}
           dockerhubPullToken: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
+
+      - name: Restore Lambda common runtime packages
+        id: cached-lambda-common-restore
+        if: inputs.disableCaching != true
+        uses: actions/cache/restore@v4
+        with:
+          path: localstack/tests/aws/services/lambda_/functions/common
+          key: common-it-${{ runner.os }}-${{ runner.arch }}-lambda-common-${{ hashFiles('localstack/tests/aws/services/lambda_/functions/common/**/src/*', 'localstack/tests/aws/services/lambda_/functions/common/**/Makefile') }}
+
+      - name: Prebuild lambda common packages
+        run: ./localstack/scripts/build_common_test_functions.sh `pwd`/localstack/tests/aws/services/lambda_/functions/common
+
+      - name: Save Lambda common runtime packages
+        if: inputs.disableCaching != true
+        uses: actions/cache/save@v4
+        with:
+          path: localstack/tests/aws/services/lambda_/functions/common
+          key: ${{ steps.cached-lambda-common-restore.outputs.cache-primary-key }}
+
+      - name: Archive Lambda
+        if: ${{ env.TESTSELECTION_PYTEST_ARGS }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-selection
+          path: |
+            dist/testselection/test-selection.txt
+          retention-days: 1
+
 
   test-preflight:
     name: "Preflight & Unit-Tests"
@@ -224,24 +252,6 @@ jobs:
         with:
           # setuptools_scm requires the git history (at least until the last tag) to determine the version
           fetch-depth: 0
-
-      - name: Restore Lambda common runtime packages
-        id: cached-lambda-common-restore
-        if: inputs.disableCaching != true
-        uses: actions/cache/restore@v4
-        with:
-          path: tests/aws/services/lambda_/functions/common
-          key: common-it-${{ runner.os }}-${{ runner.arch }}-lambda-common-${{ hashFiles('tests/aws/services/lambda_/functions/common/**/src/*', 'tests/aws/services/lambda_/functions/common/**/Makefile') }}
-
-      - name: Prebuild lambda common packages
-        run: ./scripts/build_common_test_functions.sh `pwd`/tests/aws/services/lambda_/functions/common
-
-      - name: Save Lambda common runtime packages
-        if: inputs.disableCaching != true
-        uses: actions/cache/save@v4
-        with:
-          path: tests/aws/services/lambda_/functions/common
-          key: ${{ steps.cached-lambda-common-restore.outputs.cache-primary-key }}
 
       - name: Load Localstack Docker Image
         uses: k-a-il/localstack/.github/actions/load-localstack-docker-from-artifacts@master

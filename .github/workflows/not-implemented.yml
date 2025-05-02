@@ -17,9 +17,14 @@ on:
         type: boolean
         default: false
       PYTEST_LOGLEVEL:
-        type: string
-        required: false
+        type: choice
         description: Loglevel for PyTest
+        options:
+          - DEBUG
+          - INFO
+          - WARNING
+          - ERROR
+          - CRITICAL
         default: WARNING
       disableTestSelection:
         description: 'Disable Test Selection'
@@ -44,14 +49,9 @@ on:
         type: boolean
         default: false
       PYTEST_LOGLEVEL:
-        type: choice
+        type: string
+        required: false
         description: Loglevel for PyTest
-        options:
-          - DEBUG
-          - INFO
-          - WARNING
-          - ERROR
-          - CRITICAL
         default: WARNING
       disableTestSelection:
         description: 'Disable Test Selection'
