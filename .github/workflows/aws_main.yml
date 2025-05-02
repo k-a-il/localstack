@@ -54,7 +54,7 @@ env:
 jobs:
   test:
     name: "Run integration tests"
-    uses: ./.github/workflows/aws-tests.yml
+    uses: ./.github/workflows/full-test-2.yml
     with:
       # onlyAcceptance test is either explicitly set, or it's a push event.
       # otherwise it's false (schedule event, workflow_dispatch event without setting it to true)
