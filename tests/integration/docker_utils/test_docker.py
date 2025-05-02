@@ -124,6 +124,7 @@ def create_network(docker_client: ContainerClient):
         except ContainerException as e:
             LOG.debug("Error while cleaning up network %s: %s", network, e)
 
+
 @pytest.mark.skip(reason="Failing in Github Actions")
 class TestDockerClient:
     def test_get_system_info(self, docker_client: ContainerClient):
