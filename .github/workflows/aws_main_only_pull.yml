@@ -96,6 +96,12 @@ jobs:
           name: localstack-docker-image-${{ env.PLATFORM_NAME_AMD64 }}
           path: localstack-image.tar
 
+
+      - name: List files
+        shell: bash
+        run: |
+          ls -a
+
       - name: Load Localstack ${{ env.PLATFORM_NAME_AMD64 }} Docker Image
         uses: k-a-il/localstack/.github/actions/load-localstack-docker-from-artifacts@master
         with:
