@@ -78,8 +78,8 @@ env:
 jobs:
   build:
     name: "Build Docker Image (${{ contains(matrix.runner, 'arm') && 'ARM64' || 'AMD64' }})"
-    needs:
-      - test-preflight
+#    needs:
+#      - test-preflight
     strategy:
       matrix:
         runner:
@@ -91,6 +91,10 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.runner }}
     steps:
+      - name: Determine Runner Architecture
+        shell: bash
+        run: echo "PLATFORM=${{ (runner.arch == 'X64' && 'amd64') || (runner.arch == 'ARM64' && 'arm64') || '' }}" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
