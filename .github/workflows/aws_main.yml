@@ -90,67 +90,67 @@ jobs:
         with:
           platform: ${{ env.PLATFORM_NAME_AMD64 }}
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: us-east-1
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registry-type: public
+#      - name: Login to Amazon ECR
+#        id: login-ecr
+#        uses: aws-actions/amazon-ecr-login@v2
+#        with:
+#          registry-type: public
 
-      - name: Push ${{ env.PLATFORM_NAME_AMD64 }} Docker Image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_PUSH_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PUSH_TOKEN }}
-          PLATFORM: ${{ env.PLATFORM_NAME_AMD64 }}
-        run: |
-          # Push to Docker Hub
-          ./bin/docker-helper.sh push
-          # Push to Amazon Public ECR
-          TARGET_IMAGE_NAME="public.ecr.aws/localstack/localstack" ./bin/docker-helper.sh push
-
+#      - name: Push ${{ env.PLATFORM_NAME_AMD64 }} Docker Image
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_PUSH_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PUSH_TOKEN }}
+#          PLATFORM: ${{ env.PLATFORM_NAME_AMD64 }}
+#        run: |
+#          # Push to Docker Hub
+#          ./bin/docker-helper.sh push
+#          # Push to Amazon Public ECR
+#          TARGET_IMAGE_NAME="public.ecr.aws/localstack/localstack" ./bin/docker-helper.sh push
+#
       - name: Load Localstack ${{ env.PLATFORM_NAME_ARM64 }} Docker Image
         uses: k-a-il/localstack/.github/actions/load-localstack-docker-from-artifacts@master
         with:
           platform: ${{ env.PLATFORM_NAME_ARM64 }}
 
-      - name: Push ${{ env.PLATFORM_NAME_ARM64 }} Docker Image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_PUSH_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PUSH_TOKEN }}
-          PLATFORM: ${{ env.PLATFORM_NAME_ARM64 }}
-        run: |
-          # Push to Docker Hub
-          ./bin/docker-helper.sh push
-          # Push to Amazon Public ECR
-          TARGET_IMAGE_NAME="public.ecr.aws/localstack/localstack" ./bin/docker-helper.sh push
-
-      - name: Push Multi-Arch Manifest
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_PUSH_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PUSH_TOKEN }}
-        run: |
-          # Push to Docker Hub
-          ./bin/docker-helper.sh push-manifests
-          # Push to Amazon Public ECR
-          IMAGE_NAME="public.ecr.aws/localstack/localstack" ./bin/docker-helper.sh push-manifests
-
-      - name: Publish dev release
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_PUSH_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PUSH_TOKEN }}
-        run: |
-          if git describe --exact-match --tags >/dev/null 2>&1; then
-            echo "not publishing a dev release as this is a tagged commit"
-          else
-            source .venv/bin/activate
-            make publish || echo "dev release failed (maybe it is already published)"
-          fi
+#      - name: Push ${{ env.PLATFORM_NAME_ARM64 }} Docker Image
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_PUSH_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PUSH_TOKEN }}
+#          PLATFORM: ${{ env.PLATFORM_NAME_ARM64 }}
+#        run: |
+#          # Push to Docker Hub
+#          ./bin/docker-helper.sh push
+#          # Push to Amazon Public ECR
+#          TARGET_IMAGE_NAME="public.ecr.aws/localstack/localstack" ./bin/docker-helper.sh push
+#
+#      - name: Push Multi-Arch Manifest
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_PUSH_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PUSH_TOKEN }}
+#        run: |
+#          # Push to Docker Hub
+#          ./bin/docker-helper.sh push-manifests
+#          # Push to Amazon Public ECR
+#          IMAGE_NAME="public.ecr.aws/localstack/localstack" ./bin/docker-helper.sh push-manifests
+#
+#      - name: Publish dev release
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKERHUB_PUSH_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PUSH_TOKEN }}
+#        run: |
+#          if git describe --exact-match --tags >/dev/null 2>&1; then
+#            echo "not publishing a dev release as this is a tagged commit"
+#          else
+#            source .venv/bin/activate
+#            make publish || echo "dev release failed (maybe it is already published)"
+#          fi
 
   cleanup:
     name: "Cleanup"
