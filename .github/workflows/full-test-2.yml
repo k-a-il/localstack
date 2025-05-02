@@ -1,8 +1,6 @@
 name: AWS Integration Tests
 
 on:
-  schedule:
-    - cron: 0 2 * * MON-FRI
   push:
     paths-ignore:
       - 'CODEOWNERS'
@@ -46,9 +44,14 @@ on:
         type: boolean
         default: false
       PYTEST_LOGLEVEL:
-        type: string
-        required: false
+        type: choice
         description: Loglevel for PyTest
+        options:
+          - DEBUG
+          - INFO
+          - WARNING
+          - ERROR
+          - CRITICAL
         default: WARNING
       disableTestSelection:
         description: 'Disable Test Selection'
@@ -645,8 +648,8 @@ jobs:
       - name: Run capture-not-implemented
         run: |
           source .venv/bin/activate
-          cd scripts
-          python -m capture_notimplemented_responses ../results
+          mkdir ../results
+          python -m capture_notimplemented_responses ../results/
 
       - name: Print the logs
         run: |
