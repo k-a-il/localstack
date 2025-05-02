@@ -87,7 +87,7 @@ jobs:
       - name: Upload image as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: localstack-docker-image-${{ inputs.platform }}
+          name: localstack-docker-image-${{ env.PLATFORM_NAME_AMD64 }}
           path: localstack-image.tar
 
       - name: Load Localstack ${{ env.PLATFORM_NAME_AMD64 }} Docker Image
@@ -119,6 +119,18 @@ jobs:
 #          # Push to Amazon Public ECR
 #          TARGET_IMAGE_NAME="public.ecr.aws/localstack/localstack" ./bin/docker-helper.sh push
 #
+      - name: Pull Docker image
+        run: docker pull --platform linux/arm64 localstack/localstack:latest
+
+      - name: Save Docker image to tar file
+        run: docker save localstack/localstack:latest -o localstack-image.tar
+
+      - name: Upload image as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: localstack-docker-image-${{ env.PLATFORM_NAME_AMD64 }}
+          path: localstack-image.tar
+
       - name: Load Localstack ${{ env.PLATFORM_NAME_ARM64 }} Docker Image
         uses: k-a-il/localstack/.github/actions/load-localstack-docker-from-artifacts@master
         with:
