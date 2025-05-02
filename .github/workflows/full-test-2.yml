@@ -175,12 +175,6 @@ jobs:
             dist/testselection/test-selection.txt
           retention-days: 1
 
-      - name: List files
-        shell: bash
-        run: |
-          ls -a
-          ls -a dist/testselection/
-
       - name: Run Unit Tests
         timeout-minutes: 8
         env:
