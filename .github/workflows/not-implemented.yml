@@ -145,12 +145,6 @@ jobs:
           localstack wait -t 120 || (localstack logs && false)
 
 
-      - name: List files
-        shell: bash
-        run: |
-          ls -a
-          ls -a dist/testselection/
-
       - name: Run capture-not-implemented
         run: |
           source .venv/bin/activate
