@@ -123,13 +123,12 @@ jobs:
           path: localstack/tests/aws/services/lambda_/functions/common
           key: ${{ steps.cached-lambda-common-restore.outputs.cache-primary-key }}
 
-      - name: Archive Lambda
-        if: ${{ env.TESTSELECTION_PYTEST_ARGS }}
+      - name: Archive Lambda common packages
         uses: actions/upload-artifact@v4
         with:
-          name: test-selection
+          name: lambda-common-${{ env.PLATFORM }}
           path: |
-            dist/testselection/test-selection.txt
+            localstack/tests/aws/services/lambda_/functions/common
           retention-days: 1
 
 
@@ -252,6 +251,13 @@ jobs:
         with:
           # setuptools_scm requires the git history (at least until the last tag) to determine the version
           fetch-depth: 0
+
+      - name: Download Lambda Common packages
+        uses: actions/download-artifact@v4
+        with:
+          name: lambda-common-${{ env.PLATFORM }}
+          path: |
+            tests/aws/services/lambda_/functions/common
 
       - name: Load Localstack Docker Image
         uses: k-a-il/localstack/.github/actions/load-localstack-docker-from-artifacts@master
@@ -658,6 +664,7 @@ jobs:
       - name: Run capture-not-implemented
         run: |
           source .venv/bin/activate
+          cd scripts
           mkdir ../results
           python -m capture_notimplemented_responses ../results/
 
