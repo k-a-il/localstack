@@ -88,13 +88,13 @@ jobs:
         run: docker pull --platform linux/amd64 localstack/localstack:latest
 
       - name: Save Docker image to tar file
-        run: docker save localstack/localstack:latest -o localstack-image.tar
+        run: docker save localstack/localstack:latest -o localstack-docker-image-${{ env.PLATFORM_NAME_AMD64 }}.tar
 
       - name: Upload image as artifact
         uses: actions/upload-artifact@v4
         with:
           name: localstack-docker-image-${{ env.PLATFORM_NAME_AMD64 }}
-          path: localstack-image.tar
+          path: localstack-docker-image-${{ env.PLATFORM_NAME_AMD64 }}.tar
 
 
       - name: List files
@@ -135,13 +135,13 @@ jobs:
         run: docker pull --platform linux/arm64 localstack/localstack:latest
 
       - name: Save Docker image to tar file
-        run: docker save localstack/localstack:latest -o localstack-image.tar
+        run: docker save localstack/localstack:latest -o localstack-docker-image-${{ env.PLATFORM_NAME_ARM64 }}.tar
 
       - name: Upload image as artifact
         uses: actions/upload-artifact@v4
         with:
           name: localstack-docker-image-${{ env.PLATFORM_NAME_ARM64 }}
-          path: localstack-image.tar
+          path: localstack-docker-image-${{ env.PLATFORM_NAME_ARM64 }}.tar
 
       - name: Load Localstack ${{ env.PLATFORM_NAME_ARM64 }} Docker Image
         uses: k-a-il/localstack/.github/actions/load-localstack-docker-from-artifacts@master
