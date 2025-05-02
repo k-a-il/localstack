@@ -78,6 +78,12 @@ jobs:
 #    needs:
       # all tests need to be successful for the image to be pushed
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # setuptools_scm requires the git history (at least until the last tag) to determine the version
+          fetch-depth: 0
+
       - name: Pull Docker image
         run: docker pull --platform linux/amd64 localstack/localstack:latest
 
@@ -128,7 +134,7 @@ jobs:
       - name: Upload image as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: localstack-docker-image-${{ env.PLATFORM_NAME_AMD64 }}
+          name: localstack-docker-image-${{ env.PLATFORM_NAME_ARM64 }}
           path: localstack-image.tar
 
       - name: Load Localstack ${{ env.PLATFORM_NAME_ARM64 }} Docker Image
