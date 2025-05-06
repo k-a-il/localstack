@@ -1,0 +1,27 @@
+name: Test CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-ls:
+    name: "Test Localstack"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Community Dependencies
+        run: make install-dev
+
+      - name: Start LocalStack
+        env:
+#          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+          DEBUG: 1
+          LS_LOG: 'trace'
+          IMAGE_NAME: "localstack/localstack-pro:latest"
+        run: |
+          docker pull $IMAGE_NAME
+          source .venv/bin/activate
+          localstack start -d
+          localstack wait -t 120
