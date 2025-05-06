@@ -16,7 +16,7 @@ jobs:
 
       - name: Start LocalStack
         env:
-#          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
           DEBUG: 1
           LS_LOG: 'trace'
           IMAGE_NAME: "localstack/localstack-pro:latest"
