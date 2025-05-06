@@ -22,6 +22,7 @@ jobs:
           IMAGE_NAME: "localstack/localstack-pro:latest"
         run: |
           docker pull $IMAGE_NAME
+          unset CI
           source .venv/bin/activate
           localstack start -d
           localstack wait -t 120
