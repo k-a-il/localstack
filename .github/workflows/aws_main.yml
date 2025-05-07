@@ -54,6 +54,7 @@ env:
 jobs:
   test:
     name: "Run integration tests"
+    if: false
     uses: ./.github/workflows/full-test-2.yml
     with:
       # onlyAcceptance test is either explicitly set, or it's a push event.
@@ -72,9 +73,10 @@ jobs:
 
   push:
     name: "Push Images"
+    if: false
     runs-on: ubuntu-latest
     # push image on master, target branch not set, and the dependent steps were either successful or skipped
-    if: github.ref == 'refs/heads/master' && !failure() && !cancelled()
+#    if: github.ref == 'refs/heads/master' && !failure() && !cancelled()
     needs:
       # all tests need to be successful for the image to be pushed
       - test

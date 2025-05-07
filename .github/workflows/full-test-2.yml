@@ -41,6 +41,21 @@ on:
         default: false
         required: false
         type: boolean
+      testAWSRegion:
+        description: 'AWS test region'
+        required: false
+        type: string
+        default: 'us-east-1'
+      testAWSAccountId:
+        description: 'AWS test account ID'
+        required: false
+        type: string
+        default: '000000000000'
+      testAWSAccessKeyId:
+        description: 'AWS test access key ID'
+        required: false
+        type: string
+        default: 'test'
   workflow_call:
     inputs:
       disableCaching:
@@ -68,12 +83,30 @@ on:
         default: false
         required: false
         type: boolean
+      testAWSRegion:
+        description: 'AWS test region'
+        required: false
+        type: string
+        default: 'us-east-1'
+      testAWSAccountId:
+        description: 'AWS test account ID'
+        required: false
+        type: string
+        default: '000000000000'
+      testAWSAccessKeyId:
+        description: 'AWS test access key ID'
+        required: false
+        type: string
+        default: 'test'
 
 env:
   PYTEST_LOGLEVEL: ${{ inputs.PYTEST_LOGLEVEL || 'WARNING' }}
   IMAGE_NAME: "localstack/localstack"
   TINYBIRD_DATASOURCE: "community_tests"
   TESTSELECTION_PYTEST_ARGS: "${{ !inputs.disableTestSelection && '--path-filter=dist/testselection/test-selection.txt ' || '' }}"
+  TEST_AWS_REGION_NAME: ${{ inputs.testAWSRegion }}
+  TEST_AWS_ACCOUNT_ID: ${{ inputs.testAWSAccountId }}
+  TEST_AWS_ACCESS_KEY_ID: ${{ inputs.testAWSAccessKeyId }}
 
 jobs:
   build:
