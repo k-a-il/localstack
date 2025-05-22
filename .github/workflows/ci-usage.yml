@@ -1,0 +1,34 @@
+name: Test CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/ci-usage.yml
+
+jobs:
+  test-ls:
+    name: "Test Localstack"
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Install Community Dependencies
+        run: |
+          python3 -m venv .venv
+          source .venv/bin/activate
+          python3 -m pip install localstack awscli awscli-local
+
+
+      - name: Start LocalStack
+        env:
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+          DEBUG: 1
+          LS_LOG: 'trace'
+          IMAGE_NAME: "localstack/localstack-pro:latest"
+        run: |
+          docker pull $IMAGE_NAME
+          source .venv/bin/activate
+          localstack start -d
+          localstack wait -t 120
