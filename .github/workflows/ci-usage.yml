@@ -30,5 +30,4 @@ jobs:
         run: |
           docker pull $IMAGE_NAME
           source .venv/bin/activate
-          localstack start -d
-          localstack wait -t 120
+          localstack start
