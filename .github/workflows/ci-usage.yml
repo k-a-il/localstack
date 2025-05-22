@@ -30,4 +30,5 @@ jobs:
         run: |
           docker pull $IMAGE_NAME
           source .venv/bin/activate
-          localstack start
+          localstack start -d
+          docker exec localstack-main ls -la /var/lib/localstack/cache/
