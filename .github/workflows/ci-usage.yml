@@ -33,4 +33,4 @@ jobs:
           localstack start -d
           localstack wait -t 120
           docker exec localstack-main ls -la /var/lib/localstack/cache/
-          docker exec localstack-main ls -la /root/.cache/localstack-cli/
+          docker exec localstack-main ls -la /etc/localstack/conf.d/
