@@ -6,7 +6,8 @@ on:
 env:
   PLATFORM_NAME_AMD64: "amd64"
   PLATFORM_NAME_ARM64: "arm64"
-
+  
+jobs:
   report:
     name: "Upload coverage"
     runs-on: ubuntu-latest
