@@ -18,13 +18,13 @@ jobs:
             run-id: 15320173883
             repository: localstack/localstack
             github-token: ${{ secrets.GH_TOKEN_FORKD }}
-            name: pytest-split-durations-amd64-1
-            path: artifacts/pytest-split-durations-amd64-1
+            name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
+            path: artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
-            path: .test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
+            path: artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
             include-hidden-files: true
 
         - uses: actions/download-artifact@v4
