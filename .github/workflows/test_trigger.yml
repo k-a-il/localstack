@@ -11,10 +11,6 @@ on:
       - '.github/workflows/aws-main.yml'
       - '.github/workflows/aws-tests.yml'
       - '!CODEOWNERS'
-      - '!README.md'
-      - '!.gitignore'
-      - '!.git-blame-ignore-revs'
-      - '!docs/**'
     branches:
       - master
   pull_request:
