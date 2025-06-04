@@ -11,10 +11,6 @@ on:
       - '.github/workflows/aws-main.yml'
       - '.github/workflows/aws-tests.yml'
       - '!CODEOWNERS'
-      - '!README.md'
-      - '!.gitignore'
-      - '!.git-blame-ignore-revs'
-      - '!docs/**'
     branches:
       - master
   pull_request:
@@ -22,7 +18,7 @@ on:
       - '**'
       - '!.github/**'
       - '.github/actions/**'
-      - '.github/workflows/aws-main.yml'
+      - '.github/workflows/test_trigger.yml'
       - '.github/workflows/aws-tests.yml'
       - '!CODEOWNERS'
       - '!README.md'
@@ -63,7 +59,8 @@ jobs:
     steps:
       - name: Test vars
         run: |
-          echo  ${{ github.event_name == 'push' }}
-          echo ${{ inputs.enableTestSelection == false || github.event_name == 'push' }}
+          echo ${{ github.event.inputs.enableTestSelection }}
+          echo  ${{ github.event_name }}
+          echo "disable test selection: ${{ (github.event.inputs.enableTestSelection != '' && github.event.inputs.enableTestSelection) || github.event_name == 'push' }}"
 
 
