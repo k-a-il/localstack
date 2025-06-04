@@ -1,0 +1,69 @@
+name: AWS / Build, Test, Push
+
+on:
+  schedule:
+    - cron: 0 2 * * MON-FRI
+  push:
+    paths:
+      - '**'
+      - '!.github/**'
+      - '.github/actions/**'
+      - '.github/workflows/aws-main.yml'
+      - '.github/workflows/aws-tests.yml'
+      - '!CODEOWNERS'
+      - '!README.md'
+      - '!.gitignore'
+      - '!.git-blame-ignore-revs'
+      - '!docs/**'
+    branches:
+      - master
+  pull_request:
+    paths:
+      - '**'
+      - '!.github/**'
+      - '.github/actions/**'
+      - '.github/workflows/aws-main.yml'
+      - '.github/workflows/aws-tests.yml'
+      - '!CODEOWNERS'
+      - '!README.md'
+      - '!.gitignore'
+      - '!.git-blame-ignore-revs'
+      - '!docs/**'
+  workflow_dispatch:
+    inputs:
+      onlyAcceptanceTests:
+        description: 'Only run acceptance tests'
+        required: false
+        type: boolean
+        default: false
+      enableTestSelection:
+        description: 'Enable Test Selection'
+        required: false
+        type: boolean
+        default: false
+      disableCaching:
+        description: 'Disable Caching'
+        required: false
+        type: boolean
+        default: false
+      PYTEST_LOGLEVEL:
+        type: choice
+        description: Loglevel for PyTest
+        options:
+          - DEBUG
+          - INFO
+          - WARNING
+          - ERROR
+          - CRITICAL
+        default: WARNING
+jobs:
+  test: 
+    name: Test inputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test vars
+        run: |
+          echo  ${{ github.event_name == 'push' }}
+          echo ${{ inputs.enableTestSelection == false || github.event_name == 'push' }}
+
+
