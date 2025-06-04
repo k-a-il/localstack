@@ -59,6 +59,7 @@ jobs:
     steps:
       - name: Test vars
         run: |
+          echo ${{ inputs.enableTestSelection }}
           echo  ${{ github.event_name }}
           echo ${{ inputs.enableTestSelection == false || github.event_name == 'push' }}
 
