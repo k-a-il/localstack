@@ -18,7 +18,7 @@ on:
       - '**'
       - '!.github/**'
       - '.github/actions/**'
-      - '.github/workflows/aws-main.yml'
+      - '.github/workflows/test_trigger.yml'
       - '.github/workflows/aws-tests.yml'
       - '!CODEOWNERS'
       - '!README.md'
