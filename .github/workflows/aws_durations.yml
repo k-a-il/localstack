@@ -128,7 +128,7 @@ jobs:
 
         - name: Create PR
           uses: peter-evans/create-pull-request@v7
-          if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
+          if: ${{ success() }}
           with:
             title: "Update Test Durations"
             body: "Update test durations file"
