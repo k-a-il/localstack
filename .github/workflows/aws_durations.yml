@@ -24,7 +24,7 @@ jobs:
         - name: List files in the repository
           run: |
             ls -la
-            ls -la rtifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/
+            ls -la artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/
 
         - uses: actions/upload-artifact@v4
           with:
@@ -43,7 +43,7 @@ jobs:
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2
-            path: .test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
+            path: artifacts/pytest-split-durations-amd64-2/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
             include-hidden-files: true
 
         - uses: actions/download-artifact@v4
@@ -57,7 +57,7 @@ jobs:
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3
-            path: .test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
+            path: artifacts/pytest-split-durations-amd64-3/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
             include-hidden-files: true
 
         - uses: actions/download-artifact@v4
@@ -71,64 +71,7 @@ jobs:
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4
-            path: .test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
-            include-hidden-files: true
-
-# ARM
-        - uses: actions/download-artifact@v4
-          with:
-            run-id: 15481533644
-            repository: localstack/localstack
-            github-token: ${{ secrets.GH_TOKEN_FORKD }}
-            name: pytest-split-durations-amd64-1
-            path: artifacts/pytest-split-durations-amd64-1
-
-        - uses: actions/upload-artifact@v4
-          with:
-            name: pytest-split-durations-${{ env.PLATFORM_NAME_ARM64 }}-1
-            path: .test_durations-${{ env.PLATFORM_NAME_ARM64 }}-1
-            include-hidden-files: true
-
-        - uses: actions/download-artifact@v4
-          with:
-            run-id: 15481533644
-            repository: localstack/localstack
-            github-token: ${{ secrets.GH_TOKEN_FORKD }}
-            name: pytest-split-durations-amd64-2
-            path: artifacts/pytest-split-durations-amd64-2
-
-        - uses: actions/upload-artifact@v4
-          with:
-            name: pytest-split-durations-${{ env.PLATFORM_NAME_ARM64 }}-2
-            path: .test_durations-${{ env.PLATFORM_NAME_ARM64 }}-2
-            include-hidden-files: true
-
-        - uses: actions/download-artifact@v4
-          with:
-            run-id: 15481533644
-            repository: localstack/localstack
-            github-token: ${{ secrets.GH_TOKEN_FORKD }}
-            name: pytest-split-durations-amd64-3
-            path: artifacts/pytest-split-durations-amd64-3
-
-        - uses: actions/upload-artifact@v4
-          with:
-            name: pytest-split-durations-${{ env.PLATFORM_NAME_ARM64 }}-3
-            path: .test_durations-${{ env.PLATFORM_NAME_ARM64 }}-3
-            include-hidden-files: true
-
-        - uses: actions/download-artifact@v4
-          with:
-            run-id: 15481533644
-            repository: localstack/localstack
-            github-token: ${{ secrets.GH_TOKEN_FORKD }}
-            name: pytest-split-durations-amd64-4
-            path: artifacts/pytest-split-durations-amd64-4
-
-        - uses: actions/upload-artifact@v4
-          with:
-            name: pytest-split-durations-${{ env.PLATFORM_NAME_ARM64 }}-4
-            path: .test_durations-${{ env.PLATFORM_NAME_ARM64 }}-4
+            path: artifacts/pytest-split-durations-amd64-4/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
             include-hidden-files: true
 
 # Real test
@@ -137,14 +80,17 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             pattern: pytest-split-durations-*
-            path: test-durations
             merge-multiple: true
 
         - name: Combine test durations results
           shell: bash
           run: |
             ls -la
-            ls -R test-durations
-            jq -s 'add' .test_durations-${{ env.PLATFORM_NAME_ARM64 }}*  > .test_durations_merged-${{ env.PLATFORM_NAME_ARM64 }} || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_ARM64 }}"
-            jq -s 'add' .test_durations-${{ env.PLATFORM_NAME_AMD64 }}*  > .test_durations_merged-${{ env.PLATFORM_NAME_AMD64 }} || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_AMD64 }}"
+            jq -s 'add' .test_durations-${{ env.PLATFORM_NAME_AMD64 }}*  > .test_durations || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_AMD64 }}"
             ls -la
+
+        - uses: actions/upload-artifact@v4
+          with:
+            name: pytest-merged-durations
+            path: .test-durations
+            include-hidden-files: true
