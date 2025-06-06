@@ -110,21 +110,24 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             pattern: pytest-split-durations-*
+            path: artifacts-test-durations
             merge-multiple: true
 
         - name: Combine test durations results
           shell: bash
           run: |
             ls -la
-            jq -s 'add' .test_durations-${{ env.PLATFORM_NAME_AMD64 }}*  > .test_durations || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_AMD64 }}"
+            jq -s 'add' artifacts-test-durations/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}*  > .test_durations || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_AMD64 }}"
             ls -la
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-merged-durations
-            path: .test_durations
+            path: artifacts-test-durations/.test_durations
             include-hidden-files: true
             if-no-files-found: error
+
+        - uses: actions/checkout@v4
 
         - name: Create PR
           uses: peter-evans/create-pull-request@v7
