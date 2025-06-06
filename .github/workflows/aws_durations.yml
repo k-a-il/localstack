@@ -113,6 +113,10 @@ jobs:
             path: artifacts-test-durations
             merge-multiple: true
 
+
+        - uses: actions/checkout@v4
+
+        
         - name: Combine test durations results
           shell: bash
           run: |
@@ -126,8 +130,6 @@ jobs:
             path: .test_durations
             include-hidden-files: true
             if-no-files-found: error
-
-        - uses: actions/checkout@v4
 
         - name: Create PR
           uses: peter-evans/create-pull-request@v7
