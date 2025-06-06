@@ -2,11 +2,18 @@ name: Test durations
 
 on:
   workflow_dispatch:
-
+    inputs:
+      publishMethod:
+        description: 'Select how to publish the workflow result'
+        type: choice
+        options:
+          - UPLOAD_ARTIFACT
+          - CREATE_PR
+        default: UPLOAD_ARTIFACT
 env:
-  PLATFORM_NAME_AMD64: "amd64"
-  PLATFORM_NAME_ARM64: "arm64"
-  
+  # Take test durations only for this platform
+  PLATFORM: "amd64"
+
 jobs:
   report:
     name: "Upload coverage"
@@ -27,15 +34,15 @@ jobs:
             ls -la artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/
 
         
-        # - name: Move
-        #   run: |
-        #     mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations \
-        #       artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
+        - name: Move
+          run: |
+            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations \
+              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
-            path: artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations #-${{ env.PLATFORM_NAME_AMD64 }}-1
+            path: artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
             include-hidden-files: true
 
         - uses: actions/download-artifact@v4
@@ -48,16 +55,16 @@ jobs:
 
 
         
-        # - name: Move
-        #   run: |
-        #     mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations \
-        #       artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
+        - name: Move
+          run: |
+            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations \
+              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
 
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2
-            path: artifacts/pytest-split-durations-amd64-2/.test_durations #-${{ env.PLATFORM_NAME_AMD64 }}-2
+            path: artifacts/pytest-split-durations-amd64-2/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
             include-hidden-files: true
 
         - uses: actions/download-artifact@v4
@@ -70,16 +77,16 @@ jobs:
 
 
         
-        # - name: Move
-        #   run: |
-        #     mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations \
-        #       artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
+        - name: Move
+          run: |
+            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations \
+              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
 
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3
-            path: artifacts/pytest-split-durations-amd64-3/.test_durations #-${{ env.PLATFORM_NAME_AMD64 }}-3
+            path: artifacts/pytest-split-durations-amd64-3/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
             include-hidden-files: true
 
         - uses: actions/download-artifact@v4
@@ -92,16 +99,16 @@ jobs:
 
 
         
-        # - name: Move
-        #   run: |
-        #     mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations \
-        #       artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
+        - name: Move
+          run: |
+            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations \
+              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
 
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4
-            path: artifacts/pytest-split-durations-amd64-4/.test_durations #-${{ env.PLATFORM_NAME_AMD64 }}-4
+            path: artifacts/pytest-split-durations-amd64-4/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
             include-hidden-files: true
 
 # Real test
@@ -115,32 +122,27 @@ jobs:
         - name: Load test durations
           uses: actions/download-artifact@v4
           with:
-            pattern: pytest-split-durations-*
+            pattern: pytest-split-durations-${{ env.PLATFORM }}-*
             path: artifacts-test-durations
             merge-multiple: true
-            
-        - name: Combine test durations results
-          shell: bash
-          run: |
-            ls -lRa artifacts-test-durations/
-        
-        - name: Combine test durations results
-          shell: bash
-          run: |
-            ls -la
-            jq -s 'add | to_entries | sort_by(.key) | from_entries' artifacts-test-durations/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}*  > localstack/.test_durations || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_AMD64 }}"
-            ls -la
 
-        - uses: actions/upload-artifact@v4
+        - name: Merge test durations files
+          shell: bash
+          run: |
+            jq -s 'add | to_entries | sort_by(.key) | from_entries' artifacts-test-durations/.test_durations-${{ env.PLATFORM }}*  > localstack/.test_durations || echo "::warning::Test durations were not merged"
+
+        - name: Upload artifact with merged test durations
+          uses: actions/upload-artifact@v4
+          if: ${{ success() && inputs.publishMethod == 'CREATE_PR' }}
           with:
-            name: pytest-merged-durations
+            name: merged-test-durations
             path: localstack/.test_durations
             include-hidden-files: true
             if-no-files-found: error
 
         - name: Create PR
           uses: peter-evans/create-pull-request@v7
-          if: ${{ success() }}
+          if: ${{ success() && inputs.publishMethod == 'CREATE_PR' }}
           with:
             title: "Update Test Durations"
             body: "Update test durations file"
