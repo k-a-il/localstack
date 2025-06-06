@@ -106,6 +106,12 @@ jobs:
 
 # Real test
 
+
+
+        - uses: actions/checkout@v4
+          with:
+            path: localstack
+        
         - name: Load test durations
           uses: actions/download-artifact@v4
           with:
@@ -113,21 +119,18 @@ jobs:
             path: artifacts-test-durations
             merge-multiple: true
 
-
-        - uses: actions/checkout@v4
-
         
         - name: Combine test durations results
           shell: bash
           run: |
             ls -la
-            jq -s 'add' artifacts-test-durations/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}*  > .test_durations || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_AMD64 }}"
+            jq -s 'add' artifacts-test-durations/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}*  > localstack/.test_durations || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_AMD64 }}"
             ls -la
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-merged-durations
-            path: .test_durations
+            path: localstack/.test_durations
             include-hidden-files: true
             if-no-files-found: error
 
@@ -141,6 +144,6 @@ jobs:
             author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
             committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
             commit-message: "update .test_durations to latest version"
-            add-paths: .test_durations
+            add-paths: localstack/.test_durations
             labels: "semver: patch" #area: asf, area: dependencies, 
             token: ${{ secrets.GH_CREATE_PR }}
