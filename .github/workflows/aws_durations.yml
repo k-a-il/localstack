@@ -124,7 +124,7 @@ jobs:
           shell: bash
           run: |
             ls -la
-            jq -s 'add' artifacts-test-durations/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}*  > localstack/.test_durations || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_AMD64 }}"
+            jq -s 'add | to_entries | sort_by(.key) | from_entries' artifacts-test-durations/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}*  > localstack/.test_durations || echo "::warning::Test durations were not combined for ${{ env.PLATFORM_NAME_AMD64 }}"
             ls -la
 
         - uses: actions/upload-artifact@v4
