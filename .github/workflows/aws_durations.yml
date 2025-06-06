@@ -122,5 +122,6 @@ jobs:
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-merged-durations
-            path: .test-durations
+            path: .test_durations
             include-hidden-files: true
+            error: "Test durations file was not merged"
