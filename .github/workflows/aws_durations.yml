@@ -124,4 +124,19 @@ jobs:
             name: pytest-merged-durations
             path: .test_durations
             include-hidden-files: true
-            error: "Test durations file was not merged"
+            if-no-files-found: error
+
+        - name: Create PR
+          uses: peter-evans/create-pull-request@v7
+          if: ${{ success() && steps.check-for-changes.outputs.diff-count != '0' && steps.check-for-changes.outputs.diff-count != '' }}
+          with:
+            title: "Update Test Durations"
+            body: "Update test durations file"
+            branch: "test-durations-auto-updates"
+            author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+            committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
+            commit-message: "update .test_durations to latest version"
+            add-paths: .test_durations
+            labels: "semver: patch" #area: asf, area: dependencies, 
+            token: ${{ secrets.GH_CREATE_PR }}
+            reviewers: k-a-il
