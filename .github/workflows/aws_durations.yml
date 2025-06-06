@@ -27,15 +27,15 @@ jobs:
             ls -la artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/
 
         
-        - name: Move
-          run: |
-            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations \
-              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
+        # - name: Move
+        #   run: |
+        #     mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations \
+        #       artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
-            path: artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
+            path: artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations #-${{ env.PLATFORM_NAME_AMD64 }}-1
             include-hidden-files: true
 
         - uses: actions/download-artifact@v4
@@ -48,16 +48,16 @@ jobs:
 
 
         
-        - name: Move
-          run: |
-            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations \
-              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
+        # - name: Move
+        #   run: |
+        #     mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations \
+        #       artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
 
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2
-            path: artifacts/pytest-split-durations-amd64-2/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
+            path: artifacts/pytest-split-durations-amd64-2/.test_durations #-${{ env.PLATFORM_NAME_AMD64 }}-2
             include-hidden-files: true
 
         - uses: actions/download-artifact@v4
@@ -70,16 +70,16 @@ jobs:
 
 
         
-        - name: Move
-          run: |
-            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations \
-              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
+        # - name: Move
+        #   run: |
+        #     mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations \
+        #       artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
 
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3
-            path: artifacts/pytest-split-durations-amd64-3/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
+            path: artifacts/pytest-split-durations-amd64-3/.test_durations #-${{ env.PLATFORM_NAME_AMD64 }}-3
             include-hidden-files: true
 
         - uses: actions/download-artifact@v4
@@ -92,16 +92,16 @@ jobs:
 
 
         
-        - name: Move
-          run: |
-            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations \
-              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
+        # - name: Move
+        #   run: |
+        #     mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations \
+        #       artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
 
 
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4
-            path: artifacts/pytest-split-durations-amd64-4/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
+            path: artifacts/pytest-split-durations-amd64-4/.test_durations #-${{ env.PLATFORM_NAME_AMD64 }}-4
             include-hidden-files: true
 
 # Real test
@@ -118,7 +118,11 @@ jobs:
             pattern: pytest-split-durations-*
             path: artifacts-test-durations
             merge-multiple: true
-
+            
+        - name: Combine test durations results
+          shell: bash
+          run: |
+            ls -lRa artifacts-test-durations/
         
         - name: Combine test durations results
           shell: bash
