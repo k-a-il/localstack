@@ -123,7 +123,7 @@ jobs:
         - uses: actions/upload-artifact@v4
           with:
             name: pytest-merged-durations
-            path: artifacts-test-durations/.test_durations
+            path: .test_durations
             include-hidden-files: true
             if-no-files-found: error
 
