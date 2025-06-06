@@ -144,6 +144,7 @@ jobs:
             author: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
             committer: "LocalStack Bot <localstack-bot@users.noreply.github.com>"
             commit-message: "update .test_durations to latest version"
-            add-paths: localstack/.test_durations
+            path: localstack
+            add-paths: .test_durations
             labels: "semver: patch" #area: asf, area: dependencies, 
             token: ${{ secrets.GH_CREATE_PR }}
