@@ -1,4 +1,4 @@
-name: Test durations
+name: Update test durations
 
 on:
   workflow_dispatch:
@@ -10,122 +10,38 @@ on:
           - UPLOAD_ARTIFACT
           - CREATE_PR
         default: UPLOAD_ARTIFACT
+
 env:
   # Take test durations only for this platform
   PLATFORM: "amd64"
-  PLATFORM_NAME_AMD64: "amd64"
 
 jobs:
   report:
-    name: "Upload coverage"
+    name: "Download, merge and create PR with test durations"
     runs-on: ubuntu-latest
     steps:
-        # Preparation for test
-        - uses: actions/download-artifact@v4
-          with:
-            run-id: 15625136459
-            repository: localstack/localstack
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
-            path: artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
-            
-        - name: List files in the repository
-          run: |
-            ls -la
-            ls -la artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/
-
-        
-        - name: Move
-          run: |
-            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations \
-              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
-
-        - uses: actions/upload-artifact@v4
-          with:
-            name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
-            path: artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-1
-            include-hidden-files: true
-
-        - uses: actions/download-artifact@v4
-          with:
-            run-id: 15625136459
-            repository: localstack/localstack
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            name: pytest-split-durations-amd64-2
-            path: artifacts/pytest-split-durations-amd64-2
-
-
-        
-        - name: Move
-          run: |
-            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations \
-              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
-
-
-        - uses: actions/upload-artifact@v4
-          with:
-            name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-2
-            path: artifacts/pytest-split-durations-amd64-2/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-2
-            include-hidden-files: true
-
-        - uses: actions/download-artifact@v4
-          with:
-            run-id: 15625136459
-            repository: localstack/localstack
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            name: pytest-split-durations-amd64-3
-            path: artifacts/pytest-split-durations-amd64-3
-
-
-        
-        - name: Move
-          run: |
-            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations \
-              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
-
-
-        - uses: actions/upload-artifact@v4
-          with:
-            name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-3
-            path: artifacts/pytest-split-durations-amd64-3/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-3
-            include-hidden-files: true
-
-        - uses: actions/download-artifact@v4
-          with:
-            run-id: 15625136459
-            repository: localstack/localstack
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            name: pytest-split-durations-amd64-4
-            path: artifacts/pytest-split-durations-amd64-4
-
-
-        
-        - name: Move
-          run: |
-            mv artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations \
-              artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
-
-
-        - uses: actions/upload-artifact@v4
-          with:
-            name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-4
-            path: artifacts/pytest-split-durations-amd64-4/.test_durations-${{ env.PLATFORM_NAME_AMD64 }}-4
-            include-hidden-files: true
-
-# Real test
-
-
-
         - uses: actions/checkout@v4
           with:
             path: localstack
-        
+
+        - name: Latest run-id from community repository
+          run: |
+            latest_workflow_id=$(curl -s https://api.github.com/repos/localstack/localstack/actions/workflows \
+              | jq '.workflows[] | select(.name=="AWS / Build, Test, Push").id')
+            latest_run_id=$(curl -s \
+              "https://api.github.com/repos/localstack/localstack/actions/workflows/${latest_workflow_id}/runs?branch=master&status=success&per_page=30" \
+                | jq '[.workflow_runs[] | select(.event == "schedule")][0].id')
+            echo "Latest run: https://github.com/localstack/localstack/actions/runs/${latest_run_id}"
+            echo "AWS_MAIN_LATEST_SCHEDULED_RUN_ID=${latest_run_id}" >> $GITHUB_ENV
+
         - name: Load test durations
           uses: actions/download-artifact@v4
           with:
             pattern: pytest-split-durations-${{ env.PLATFORM }}-*
             path: artifacts-test-durations
             merge-multiple: true
+            run-id: ${{ env.AWS_MAIN_LATEST_SCHEDULED_RUN_ID }}
+            github-token: ${{ secrets.GITHUB_TOKEN }}  # PAT with access to artifacts from GH Actions
 
         - name: Merge test durations files
           shell: bash
@@ -153,5 +69,5 @@ jobs:
             commit-message: "CI: update .test_durations to latest version"
             path: localstack
             add-paths: .test_durations
-            labels: "semver: patch" #area: asf, area: dependencies, 
+            labels: "semver: patch, area: testing, area: ci"
             token: ${{ secrets.GITHUB_TOKEN }}
