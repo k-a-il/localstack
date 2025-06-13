@@ -23,7 +23,7 @@ jobs:
         # Preparation for test
         - uses: actions/download-artifact@v4
           with:
-            run-id: 15481533644
+            run-id: 15625136459
             repository: localstack/localstack
             github-token: ${{ secrets.GITHUB_TOKEN }}
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
@@ -48,7 +48,7 @@ jobs:
 
         - uses: actions/download-artifact@v4
           with:
-            run-id: 15481533644
+            run-id: 15625136459
             repository: localstack/localstack
             github-token: ${{ secrets.GITHUB_TOKEN }}
             name: pytest-split-durations-amd64-2
@@ -70,7 +70,7 @@ jobs:
 
         - uses: actions/download-artifact@v4
           with:
-            run-id: 15481533644
+            run-id: 15625136459
             repository: localstack/localstack
             github-token: ${{ secrets.GITHUB_TOKEN }}
             name: pytest-split-durations-amd64-3
@@ -92,7 +92,7 @@ jobs:
 
         - uses: actions/download-artifact@v4
           with:
-            run-id: 15481533644
+            run-id: 15625136459
             repository: localstack/localstack
             github-token: ${{ secrets.GITHUB_TOKEN }}
             name: pytest-split-durations-amd64-4
