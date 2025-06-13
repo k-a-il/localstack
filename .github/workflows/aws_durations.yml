@@ -25,7 +25,7 @@ jobs:
           with:
             run-id: 15481533644
             repository: localstack/localstack
-            github-token: ${{ secrets.GH_TOKEN_FORKD }}
+            github-token: ${{ secrets.GITHUB_TOKEN }}
             name: pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
             path: artifacts/pytest-split-durations-${{ env.PLATFORM_NAME_AMD64 }}-1
             
@@ -50,7 +50,7 @@ jobs:
           with:
             run-id: 15481533644
             repository: localstack/localstack
-            github-token: ${{ secrets.GH_TOKEN_FORKD }}
+            github-token: ${{ secrets.GITHUB_TOKEN }}
             name: pytest-split-durations-amd64-2
             path: artifacts/pytest-split-durations-amd64-2
 
@@ -72,7 +72,7 @@ jobs:
           with:
             run-id: 15481533644
             repository: localstack/localstack
-            github-token: ${{ secrets.GH_TOKEN_FORKD }}
+            github-token: ${{ secrets.GITHUB_TOKEN }}
             name: pytest-split-durations-amd64-3
             path: artifacts/pytest-split-durations-amd64-3
 
@@ -94,7 +94,7 @@ jobs:
           with:
             run-id: 15481533644
             repository: localstack/localstack
-            github-token: ${{ secrets.GH_TOKEN_FORKD }}
+            github-token: ${{ secrets.GITHUB_TOKEN }}
             name: pytest-split-durations-amd64-4
             path: artifacts/pytest-split-durations-amd64-4
 
@@ -154,4 +154,4 @@ jobs:
             path: localstack
             add-paths: .test_durations
             labels: "semver: patch" #area: asf, area: dependencies, 
-            token: ${{ secrets.GH_CREATE_PR }}
+            token: ${{ secrets.GITHUB_TOKEN }}
