@@ -41,6 +41,7 @@ jobs:
             path: artifacts-test-durations
             merge-multiple: true
             run-id: ${{ env.AWS_MAIN_LATEST_SCHEDULED_RUN_ID }}
+            repository: localstack/localstack
             github-token: ${{ secrets.GITHUB_TOKEN }}  # PAT with access to artifacts from GH Actions
 
         - name: Merge test durations files
