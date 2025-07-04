@@ -140,8 +140,6 @@ env:
 jobs:
   build:
     name: "Build Docker Image (${{ contains(matrix.runner, 'arm') && 'ARM64' || 'AMD64' }})"
-    needs:
-      - test-preflight
     strategy:
       matrix:
         runner:
